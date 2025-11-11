@@ -38,7 +38,7 @@ st.dataframe(norm_matrix.style.format("{:.4f}"))
 # -------------------------------------------------
 # Étape 3 : Poids par la méthode d’Entropie
 # -------------------------------------------------
-st.header("3️⃣ Calcul des poids par la méthode d'entropie")
+st.header("3️⃣ Calcul des poids par la méthode d'entropie des sous criteres")
 
 pij = norm_matrix / norm_matrix.sum()
 epsilon = 1e-12
@@ -48,21 +48,13 @@ wej = (1 - ej) / (1 - ej).sum()
 st.write("**Poids Entropie (wₑⱼ)**")
 st.dataframe(pd.DataFrame(wej, columns=["Poids Entropie"]).T.style.format("{:.4f}"))
 
+st.header("3️⃣ es poids par la méthode d'entropie des criteres A B C ")
+st.write("**Poids Entropie (wₑi)**")
+st.dataframe(pd.DataFrame(wei, columns=["Poids Entropie"]).T.style.format("{:.4f}"))
 # -------------------------------------------------
 # Étape 4 : Poids par la méthode AHP
 # -------------------------------------------------
-st.header("4️⃣ Poids par la méthode AHP (matrice de comparaison)")
-
-st.write("Entrez la matrice de comparaison par paires (critères).")
-
-ahp_df = pd.DataFrame(np.ones((n, n)), index=crit_names, columns=crit_names)
-ahp_input = st.data_editor(ahp_df, num_rows="fixed")
-
-# Normalisation et calcul des poids AHP
-ahp_norm = ahp_input / ahp_input.sum()
-ahp_weights = ahp_norm.mean(axis=1)
-ahp_weights = ahp_weights / ahp_weights.sum()
-
+st.header("4️⃣ Poids tota par la méthode AHP ")
 st.write("**Poids AHP normalisés (wₕⱼ)**")
 st.dataframe(pd.DataFrame(ahp_weights, columns=["Poids AHP"]).T.style.format("{:.4f}"))
 
@@ -71,7 +63,7 @@ st.dataframe(pd.DataFrame(ahp_weights, columns=["Poids AHP"]).T.style.format("{:
 # -------------------------------------------------
 st.header("5️⃣ Combinaison pondérée des poids")
 
-combined = (wej * ahp_weights) / (wej * ahp_weights).sum()
+combined = (wej*wei*ahp_weights) / ((wei*wej) * ahp_weights).sum()
 
 st.write("**Poids combinés (w𝑐ⱼ)**")
 st.dataframe(pd.DataFrame(combined, columns=["Poids combinés"]).T.style.format("{:.4f}"))
@@ -117,3 +109,4 @@ best_alt = results.index[0]
 st.success(f"🏆 L’alternative la plus performante est **{best_alt}** avec un score de proximité de {results.iloc[0, 2]:.4f}")
 
 st.caption("Développé par Aya Manyani 🌸 – Méthode Entropy–AHP–TOPSIS complète.")
+
